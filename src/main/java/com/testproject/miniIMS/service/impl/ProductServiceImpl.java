@@ -64,16 +64,38 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto update(Long id, ProductDto dto) {
+        // Validate input ID
+        if (id == null) {
+            throw new IllegalArgumentException("Product ID cannot be null");
+        }
+
+        // Find existing product
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
+        // Validate category ID
+        if (dto.getCategoryId() == null) {
+            throw new IllegalArgumentException("Category ID cannot be null");
+        }
+
+        // Find and validate category
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.getCategoryId()));
 
-        modelMapper.map(dto, product);
+        if (category.getName() == null || category.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Category must have a valid name");
+        }
+
+        // Update only the fields you want to allow updating
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setQuantity(dto.getQuantity());
         product.setCategory(category);
 
         Product updated = productRepository.save(product);
+
+        // Map to DTO
         ProductDto updatedDto = modelMapper.map(updated, ProductDto.class);
         updatedDto.setCategoryId(category.getId());
         updatedDto.setCategoryName(category.getName());
