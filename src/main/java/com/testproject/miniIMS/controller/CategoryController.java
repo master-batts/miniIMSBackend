@@ -5,6 +5,8 @@ import com.testproject.miniIMS.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -24,6 +26,11 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAll());
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Page<CategoryDto>> getAllCategoriesPaged(Pageable pageable) {
+        return ResponseEntity.ok(categoryService.getAllPaged(pageable));
     }
 
     @GetMapping("/{id}")

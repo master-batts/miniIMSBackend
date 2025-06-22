@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -31,6 +34,12 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll().stream()
                 .map(category -> modelMapper.map(category, CategoryDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<CategoryDto> getAllPaged(Pageable pageable) {
+        return categoryRepository.findAll(pageable)
+                .map(category -> modelMapper.map(category, CategoryDto.class));
     }
 
     @Override
