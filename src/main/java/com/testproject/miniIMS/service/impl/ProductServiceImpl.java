@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -49,6 +53,20 @@ public class ProductServiceImpl implements ProductService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<ProductDto> getAll(Pageable pageable) {
+        Page<Product> productPage = productRepository.findAll(pageable);
+        List<ProductDto> productDtos = productPage.getContent().stream()
+                .map(product -> {
+                    ProductDto dto = modelMapper.map(product, ProductDto.class);
+                    dto.setCategoryId(product.getCategory().getId());
+                    dto.setCategoryName(product.getCategory().getName());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return new PageImpl<>(productDtos, pageable, productPage.getTotalElements());
     }
 
     @Override
