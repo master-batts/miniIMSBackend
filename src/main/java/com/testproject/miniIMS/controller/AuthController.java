@@ -1,4 +1,4 @@
-package com.testproject.miniIMS.config;
+package com.testproject.miniIMS.controller;
 
 import com.testproject.miniIMS.dto.JwtAuthResponse;
 import com.testproject.miniIMS.dto.LoginDto;
